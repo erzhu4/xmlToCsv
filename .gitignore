@@ -1,0 +1,4 @@
+/node_modules
+/xml/*.xml
+/results/*.csv
+/mappings.js
