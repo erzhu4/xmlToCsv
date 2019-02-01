@@ -86,6 +86,11 @@ class Main {
 
         console.log("start");
 
+        if (!fs.existsSync('./mappingFile/mapping.csv')) {
+            console.log("Mapping file not found!");
+            return;
+        }
+        
         await this.setMappingArraysFromMappingCsv();
         
         if (this.mappedColumnOrdered.length != this.xmlColumnOrdered.length){
