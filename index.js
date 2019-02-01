@@ -24,6 +24,9 @@ class Main {
 
     setRawDataToValuesFromXml(xmlFields){
         xmlFields.forEach((obj) => {
+            if (!obj.$ || !obj['_'] || !obj.$['xfdf:original']){
+                return;
+            }
             let rawFieldName = obj.$['xfdf:original'];
             let value = obj['_'];
             this.rawDataToValues[rawFieldName] = value;
@@ -35,7 +38,7 @@ class Main {
             console.log("Loading file: " + fileName);
             fs.readFile('./xml/' + fileName, function(err, data) {
                 this.parser.parseString(data, function (err, result) {
-                    if (!result || !result.fields || !result.fields.field) {
+                    if (err || !result || !result.fields || !result.fields.field) {
                         console.log("Error in file: " + fileName);
                         resolve(null);
                     }
@@ -72,6 +75,11 @@ class Main {
     async run(){
 
         console.log("start");
+
+        if (this.mappedColumnOrdered.length != this.rawColumnOrdered.length){
+            console.log("Mapping File In Valid");
+            return;
+        }
 
         var fileNames = await this.getAllXmlFileNames('./xml');
 
