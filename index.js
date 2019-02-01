@@ -3,23 +3,16 @@ const xml2js = require('xml2js');
 const { convertArrayToCSV } = require('convert-array-to-csv');
 const moment = require('moment');
 
-const mappings = require('./mappings');
-
+var csv = require("fast-csv");
 
 class Main {
 
     constructor(){
         this.parser = new xml2js.Parser();
         this.data = [];
-        this.rawDataToValues = {};
-        this.rawColumnOrdered = Object.keys(mappings);
-        this.mappedColumnOrdered = this.makeMappedColumnArray(this.rawColumnOrdered);
-    }
-
-    makeMappedColumnArray(rawColumnOrdered){
-        return rawColumnOrdered.map(rawColumn => {
-            return mappings[rawColumn];
-        });
+        this.rawXmlDataToValues = {};
+        this.xmlColumnOrdered = [];
+        this.mappedColumnOrdered = [];
     }
 
     setRawDataToValuesFromXml(xmlFields){
@@ -29,8 +22,25 @@ class Main {
             }
             let rawFieldName = obj.$['xfdf:original'];
             let value = obj['_'];
-            this.rawDataToValues[rawFieldName] = value;
+            this.rawXmlDataToValues[rawFieldName] = value;
         });
+    }
+
+    setMappingArraysFromMappingCsv(){
+
+        var pushDataToMappingArrays = function(arr){
+            this.xmlColumnOrdered.push(arr[1]);
+            this.mappedColumnOrdered.push(arr[0]);
+        }.bind(this);
+
+        return new Promise(function(resolve, reject){
+            csv.fromPath("./mappingFile/mapping.csv")
+                .on("data", pushDataToMappingArrays)
+                .on("end", function(){
+                    resolve();
+                });
+            }
+        );
     }
 
     readFileAndMakeRow(fileName){
@@ -47,8 +57,8 @@ class Main {
 
                     var row = [];
 
-                    this.rawColumnOrdered.forEach(rawColumn => {
-                        row.push(this.rawDataToValues[rawColumn] || '');
+                    this.xmlColumnOrdered.forEach(rawColumn => {
+                        row.push(this.rawXmlDataToValues[rawColumn] || '');
                     });
 
                     resolve(row);
@@ -76,7 +86,9 @@ class Main {
 
         console.log("start");
 
-        if (this.mappedColumnOrdered.length != this.rawColumnOrdered.length){
+        await this.setMappingArraysFromMappingCsv();
+        
+        if (this.mappedColumnOrdered.length != this.xmlColumnOrdered.length){
             console.log("Mapping File In Valid");
             return;
         }

@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "convert-array-to-csv": "^1.0.4",
+    "fast-csv": "^2.4.1",
     "fs": "0.0.1-security",
     "moment": "^2.24.0",
     "xml2js": "^0.4.19"
