@@ -5,6 +5,10 @@ const moment = require('moment');
 
 var csv = require("fast-csv");
 
+var cleanString = function(str) {
+    return str.split("\n").join(" ").split('"').join("'");
+};
+
 class Main {
 
     constructor(){
@@ -22,8 +26,9 @@ class Main {
             }
             let rawFieldName = obj.$['xfdf:original'];
             let value = obj['_'];
-            this.rawXmlDataToValues[rawFieldName] = value;
+            this.rawXmlDataToValues[rawFieldName] = cleanString(value);
         });
+        // console.log(JSON.stringify(this.rawXmlDataToValues));
     }
 
     setMappingArraysFromMappingCsv(){
@@ -106,6 +111,8 @@ class Main {
                 this.data.push(row);
             }
         }
+        // console.log(JSON.stringify(this.data));
+        // return;
 
         var csvString = convertArrayToCSV(this.data, {
             header: this.mappedColumnOrdered,

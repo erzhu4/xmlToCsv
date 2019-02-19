@@ -1,0 +1,17 @@
+How to use: xmlToCSV
+
+1. Make sure you have node installed on your computer: https://nodejs.org/en/download/
+	(May have to run with elevated permissions)
+
+2. Make sure you have a mapping file called "mapping.csv" in the /mappingFile folder
+- Each row of the FIRST(A) column of the mapping.csv file will correspond to the name of a column in the output csv in the order they appear in the mapping.csv
+- Each row of the SECOND(B) column of the mapping.csv file will correspond to the field name in the xml files and outputed under the the corresponding column name in column A of the mapping.csv
+- There will be one row per xml file in the output CSV
+
+3. put all xml files into the /xml folder. (This will be the input folder)
+
+4. Run (double click) the convertXmlsToCsv.bat file in the main folder.
+
+5. A csv should appear in the /results folder called "converted{timestamp}.csv" containing the data from all the xml files in the /xml folder.
+
+Please contact eric.zhu@oliverwyman.com if you have any questions.
